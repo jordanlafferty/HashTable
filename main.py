@@ -36,7 +36,7 @@ class HashTable1:
 
 
 class HashTable:
-    M = 53
+    M = 79
 
     def __init__(self):
         self.theHash = [[] for _ in range(self.M)]
@@ -72,16 +72,12 @@ class HashTable:
             print("]}")
 
 
-def getKey(letter):
-    alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    for i in range(len(alphabet)):
-        if letter == alphabet[i]:
-            letter = letter.lower()
-            break
-    allChars = "abcdefghijklmnopqrstuvwxyz1234567890!,.?''+=()&;: "
-    for i in range(len(allChars)):
-        if letter == allChars[i]:
-            return i
+def getKey(word, arr):
+    for i in range(len(arr)):
+        if word == arr[i]:
+            return i, arr
+    arr.append(word)
+    return len(arr)-1, arr
 
 
 def newPoem(text, hashTable):
@@ -107,12 +103,22 @@ def newPoem(text, hashTable):
 def readTheText(text):
     theHash = HashTable()
     poemInKeys = []
+    theWords = []
+    currWord = ""
     for i in range(len(text)):
-        index = getKey(text[i])
-        letter = text[i]
-        theHash.Hash(index)
-        theHash.insert(index, letter)
-        poemInKeys.append(index)
+        if text[i] == "," or text[i] == "." or text[i] == ";" or text[i]  == ":" or text[i]  == "!" or text[i]  == "?":
+            index, theWords = getKey(text[i] , theWords)
+            theHash.Hash(index)
+            theHash.insert(index, text[i] )
+            poemInKeys.append(index)
+        elif text[i] == ' ':
+            index, theWords = getKey(currWord, theWords)
+            theHash.Hash(index)
+            theHash.insert(index, currWord)
+            poemInKeys.append(index)
+            currWord = " "
+        else:
+            currWord = currWord + text[i]
     return theHash, poemInKeys
 
 
